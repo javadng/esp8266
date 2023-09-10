@@ -4,11 +4,12 @@ import connectDB from "@/utils/db";
 
 export async function POST(request: Request) {
   try {
-    // const isConnected = await connectDB();
-
-    // console.log(isConnected);
+    const isConnected = await connectDB();
 
     const response = await request.json();
+
+    if (!isConnected)
+      return NextResponse.json({ message: "fail to connect mongoDB" });
 
     const { id } = response;
     const date = new Date();
