@@ -14,9 +14,9 @@ export async function POST(request: Request) {
     const { id } = response;
     const date = new Date();
 
-    const enteredUser = await EnterUserModel.create({ uid: id, date });
+    await EnterUserModel.create({ uid: id, date });
 
-    return NextResponse.json({ message: "successfull", enteredUser });
+    return NextResponse.json({ id, date });
   } catch (error) {
     return NextResponse.json({ message: "fail", error });
   }
