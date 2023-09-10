@@ -17,7 +17,8 @@ export async function POST(request: Request) {
     await EnterUserModel.create({ uid: id, date });
 
     return NextResponse.json({ id, date });
-  } catch (error) {
-    return NextResponse.json({ message: "fail", error });
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json({ status: "fail", message: error.message });
   }
 }
