@@ -3,11 +3,12 @@
 import mongoose from "mongoose";
 
 // Replace 'your_database_url' with your actual MongoDB connection string
-const dbUrl = "mongodb+srv://admin:admin1234@cluster0.tvul5uv.mongodb.net/esp8266";
+export const DBURL =
+  "mongodb+srv://admin:admin1234@cluster0.tvul5uv.mongodb.net/esp8266";
 
 async function connectDB() {
   try {
-    await mongoose.connect(dbUrl);
+    await mongoose.connect(DBURL);
     return true;
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
