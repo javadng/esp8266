@@ -2,3 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.input-form:focus,
+.input-form:not(:placeholder-shown),
+.input-form:-webkit-autofill {
+  background-color: #edf2fe;
+}
+
+.input-form:focus + .label-form,
+.input-form:not(:placeholder-shown) + .label-form,
+.input-form:-webkit-autofill + .label-form {
+  transform: translateY(-2.5rem);
+}

@@ -13,7 +13,6 @@ const enterSchema = new mongoose.Schema({
   uid: {
     type: String,
     required: [true, "set the ID!"],
-    unique: true,
   },
 });
 
