@@ -1,4 +1,7 @@
+import { checkAuthToken } from "@/utils/check-auth";
 
 export default function Home() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  checkAuthToken();
+
+  return <div>Home page</div>;
 }
