@@ -11,6 +11,16 @@ const SignIn = (props) => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    const res = await fetch("/api/auth/signin", {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    console.log(data);
   };
 
   return (

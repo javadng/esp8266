@@ -6,8 +6,8 @@ import User from "../../../../../models/userModel";
 export async function POST(req: NextRequest, res: NextResponse) {
   const data = await req.json();
 
-  const { name, username, password, passwordConfirm } = data;
-
+  const { name, username, password, passwordConfirm, email } = data;
+  
   let client;
   try {
     client = await mongoose.connect(DBURL);
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
 
   try {
-    await User.create({ name, username, password, passwordConfirm });
+    await User.create({ name, username, password, passwordConfirm, email });
 
     return NextResponse.json(
       { status: "success", message: "welcome" },

@@ -30,6 +30,6 @@
     "src/app/api/returndata/hello.js",
     "src/app/api/returndata/route.ts",
     "models/enterModel.js"
-  ],
+, "models/userModel.js", "models/userModel.js", "src/components/auth/input.js"  ],
   "exclude": ["node_modules"]
 }

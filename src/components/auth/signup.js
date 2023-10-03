@@ -16,8 +16,9 @@ const SignUp = (props) => {
   const passwordChangeHander = (e) => setPassword(e.target.value);
   const passwordConfirmChangeHndl = (e) => setPasswordConfirm(e.target.value);
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+
     const data = {
       username,
       name,
@@ -25,6 +26,16 @@ const SignUp = (props) => {
       password,
       passwordConfirm,
     };
+
+    const res = await fetch("/api/auth/signup", {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+
+    console.log(result);
   };
 
   return (
