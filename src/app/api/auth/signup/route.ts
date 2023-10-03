@@ -7,7 +7,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const data = await req.json();
 
   const { name, username, password, passwordConfirm, email } = data;
-  
+
   let client;
   try {
     client = await mongoose.connect(DBURL);
