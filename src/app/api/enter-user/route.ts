@@ -15,28 +15,48 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const data = await req.json();
 
-  const { id } = data;
+  const { uid } = data;
 
-  if (!id || !id.trim())
+  if (!uid || !uid.trim())
     return NextResponse.json(
       {
         status: "fail.",
-        message: "ID is not Found in the response.",
+        message: "UID is not Found in the response.",
       },
       { status: 422 }
     );
 
   const date = new Date();
-  const enteredData = { uid: id, date };
+  const formatedDate = Intl.DateTimeFormat("fa-IR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format();
 
   try {
-    await EnterUserModel.create(enteredData);
+    const userEnterDetail = { enter: date, formatedDate };
+
+    const enteredUser = await EnterUserModel.findOneAndUpdate(
+      { uid },
+      { $set: { userLogins: userEnterDetail } }
+    );
+
+    if (!enteredUser) {
+      return NextResponse.json(
+        { status: "fail", message: "user not found." },
+        { status: 401 }
+      );
+    }
+
+    // EnterUserModel.updateOne({ uid }, { $push: { userLogins: formatedDate } });
 
     return NextResponse.json(
-      { status: "success", message: "welcome" },
+      { status: "success", message: "welcome", enteredUser },
       { status: 201 }
     );
   } catch (error: any) {
+    mongoose.connection.close();
+
     return NextResponse.json({
       status: "fail. create-enter",
       message: error.message,

@@ -4,20 +4,14 @@ import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import User, { UserDocument } from "@/../../models/userModel";
 import { createSendToken } from "@/utils/jwt-signtoken";
+import DBConnectHandler from "@/utils/dbConnectFn";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const data = await req.json();
 
   const { username, password } = data;
 
-  let client;
-  try {
-    client = await mongoose.connect(DBURL);
-    console.log("DB connected");
-  } catch (error: any) {
-    console.log("DB fail.", error);
-    return NextResponse.json({ status: "fail. DB", message: error.message });
-  }
+  let client = await DBConnectHandler(NextResponse);
 
   try {
     const user: UserDocument | null = await User.findOne({ username })
@@ -45,7 +39,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json(
       { status: "success", message: "welcome", data: user },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (error: any) {
     return NextResponse.json({

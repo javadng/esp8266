@@ -5,14 +5,25 @@ import mongoose from "mongoose";
 //   uid: String;
 // }
 
+const userLoginSchema = new mongoose.Schema({
+  formatedDate: String,
+  enter: Date,
+  exit: Date,
+});
+
 const enterSchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    required: [true, "set the time!"],
-  },
   uid: {
     type: String,
+    unique: true,
     required: [true, "set the ID!"],
+  },
+  username: {
+    type: String,
+    unique: true,
+    require: [true, "Set the username!"],
+  },
+  userLogins: {
+    type: userLoginSchema,
   },
 });
 
@@ -22,6 +33,6 @@ const enterSchema = new mongoose.Schema({
 //     : mongoose.model("enteredUser", enterSchema);
 
 const EnterUserModel =
-  mongoose.models.enteredUser || mongoose.model("enteredUser", enterSchema);
+  mongoose.models.EnterModel || mongoose.model("EnterModel", enterSchema);
 
 export default EnterUserModel;
