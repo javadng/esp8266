@@ -1,10 +1,5 @@
 import mongoose from "mongoose";
 
-// interface EnterUserDetail extends Document {
-//   date: Date;
-//   uid: String;
-// }
-
 const userLoginSchema = new mongoose.Schema({
   formatedDate: String,
   enter: Date,
@@ -23,7 +18,7 @@ const enterSchema = new mongoose.Schema({
     require: [true, "Set the username!"],
   },
   userLogins: {
-    type: userLoginSchema,
+    type: [userLoginSchema],
   },
 });
 

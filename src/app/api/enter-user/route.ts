@@ -31,15 +31,51 @@ export async function POST(req: NextRequest, res: NextResponse) {
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format();
+  }).format(date);
 
   try {
-    const userEnterDetail = { enter: date, formatedDate };
+    const { userLogins: userLogs } = await EnterUserModel.findOne({ uid })
+      .select("userLogins")
+      .exec();
 
-    const enteredUser = await EnterUserModel.findOneAndUpdate(
-      { uid },
-      { $set: { userLogins: userEnterDetail } }
+    const todayLogs = userLogs.find(
+      (item: any) => item.formatedDate === formatedDate
     );
+    const allOtherLogs = userLogs.filter(
+      (item: any) => item.formatedDate !== formatedDate
+    );
+
+    let enteredUser;
+
+    const isTodayExist = userLogs.some(
+      (item: any) => item.formatedDate === formatedDate
+    );
+
+    if (isTodayExist) {
+      const userEnterDetail = [
+        {
+          formatedDate,
+          enter: todayLogs.enter,
+          exit: date,
+        },
+        ...allOtherLogs,
+      ];
+
+      enteredUser = await EnterUserModel.findOneAndUpdate(
+        { uid },
+        { $set: { userLogins: userEnterDetail } }
+      );
+    } else if (!isTodayExist) {
+      const userEnterDetail = { enter: date, formatedDate };
+
+      enteredUser = await EnterUserModel.findOneAndUpdate(
+        { uid },
+        { $push: { userLogins: userEnterDetail } }
+      );
+    }
+
+    //else if (isTodayExist && exit) {
+    //}
 
     if (!enteredUser) {
       return NextResponse.json(
@@ -51,7 +87,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // EnterUserModel.updateOne({ uid }, { $push: { userLogins: formatedDate } });
 
     return NextResponse.json(
-      { status: "success", message: "welcome", enteredUser },
+      { status: "success", message: "welcome" },
       { status: 201 }
     );
   } catch (error: any) {
