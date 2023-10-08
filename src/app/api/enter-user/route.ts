@@ -3,6 +3,12 @@ import EnterUserModel from "../../../../models/enterModel";
 import { DBURL } from "@/utils/db";
 import mongoose from "mongoose";
 
+interface UserLogs {
+  enter: Date;
+  exit: Date;
+  formatedDate: String;
+}
+
 export async function POST(req: NextRequest, res: NextResponse) {
   let client;
   try {
@@ -39,41 +45,32 @@ export async function POST(req: NextRequest, res: NextResponse) {
       .exec();
 
     const todayLogs = userLogs.filter(
-      (item: any) => item.formatedDate === formatedDate
+      (item: UserLogs) => item.formatedDate === formatedDate
     );
-    const allOtherLogs = userLogs.filter((item: any) => !!item.exit);
+    const allOtherLogs = userLogs.filter((item: UserLogs) => !!item.exit);
 
     let enteredUser;
 
     const isTodayExist = userLogs.some(
-      (item: any) => item.formatedDate === formatedDate
+      (item: UserLogs) => item.formatedDate === formatedDate
     );
 
-    const itemHasNoExit = todayLogs.find((item: any) => !!!item.exit);
+    const itemHasNoExit = todayLogs.find((item: UserLogs) => !!!item.exit);
 
-    if (isTodayExist) {
-      if (itemHasNoExit) {
-        const enteredDetail = [
-          {
-            formatedDate,
-            enter: itemHasNoExit.enter,
-            exit: date,
-          },
-          ...allOtherLogs,
-        ];
+    if (isTodayExist && itemHasNoExit) {
+      const enteredDetail = [
+        {
+          formatedDate,
+          enter: itemHasNoExit.enter,
+          exit: date,
+        },
+        ...allOtherLogs,
+      ];
 
-        enteredUser = await EnterUserModel.findOneAndUpdate(
-          { uid },
-          { $set: { userLogins: enteredDetail } }
-        );
-      } else {
-        const enteredDetail = { enter: date, formatedDate };
-
-        enteredUser = await EnterUserModel.updateOne(
-          { uid },
-          { $push: { userLogins: enteredDetail } }
-        );
-      }
+      enteredUser = await EnterUserModel.findOneAndUpdate(
+        { uid },
+        { $set: { userLogins: enteredDetail } }
+      );
     } else {
       const enteredDetail = { enter: date, formatedDate };
 
