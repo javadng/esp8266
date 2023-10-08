@@ -38,12 +38,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       .select("userLogins")
       .exec();
 
-    const todayLogs = userLogs.find(
+    const todayLogs = userLogs.filter(
       (item: any) => item.formatedDate === formatedDate
     );
-    const allOtherLogs = userLogs.filter(
-      (item: any) => item.formatedDate !== formatedDate
-    );
+    const allOtherLogs = userLogs.filter((item: any) => !!item.exit);
 
     let enteredUser;
 
@@ -51,31 +49,39 @@ export async function POST(req: NextRequest, res: NextResponse) {
       (item: any) => item.formatedDate === formatedDate
     );
 
+    const itemHasNoExit = todayLogs.find((item: any) => !!!item.exit);
+
     if (isTodayExist) {
-      const userEnterDetail = [
-        {
-          formatedDate,
-          enter: todayLogs.enter,
-          exit: date,
-        },
-        ...allOtherLogs,
-      ];
+      if (itemHasNoExit) {
+        const enteredDetail = [
+          {
+            formatedDate,
+            enter: itemHasNoExit.enter,
+            exit: date,
+          },
+          ...allOtherLogs,
+        ];
 
-      enteredUser = await EnterUserModel.findOneAndUpdate(
-        { uid },
-        { $set: { userLogins: userEnterDetail } }
-      );
-    } else if (!isTodayExist) {
-      const userEnterDetail = { enter: date, formatedDate };
+        enteredUser = await EnterUserModel.findOneAndUpdate(
+          { uid },
+          { $set: { userLogins: enteredDetail } }
+        );
+      } else {
+        const enteredDetail = { enter: date, formatedDate };
 
-      enteredUser = await EnterUserModel.findOneAndUpdate(
+        enteredUser = await EnterUserModel.updateOne(
+          { uid },
+          { $push: { userLogins: enteredDetail } }
+        );
+      }
+    } else {
+      const enteredDetail = { enter: date, formatedDate };
+
+      enteredUser = await EnterUserModel.updateOne(
         { uid },
-        { $push: { userLogins: userEnterDetail } }
+        { $push: { userLogins: enteredDetail } }
       );
     }
-
-    //else if (isTodayExist && exit) {
-    //}
 
     if (!enteredUser) {
       return NextResponse.json(
