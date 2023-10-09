@@ -1,6 +1,4 @@
 import { env } from "node:process";
-import { DBURL } from "@/utils/db";
-import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import User, { UserDocument } from "@/../../models/userModel";
 import { createSendToken } from "@/utils/jwt-signtoken";
@@ -9,7 +7,15 @@ import DBConnectHandler from "@/utils/dbConnectFn";
 export async function POST(req: NextRequest, res: NextResponse) {
   const data = await req.json();
 
-  const { username, password } = data;
+  const username = data?.username; // Ensure username is defined or assign null/empty string
+  const password = data?.password; // Ensure password is defined or assign null/empty string
+
+  if (!username || !username.trim() || !password || !password.trim()) {
+    return NextResponse.json(
+      { status: "fail", message: "password or username missing." },
+      { status: 404 }
+    );
+  }
 
   let client = await DBConnectHandler(NextResponse);
 
@@ -26,12 +32,18 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
 
     // password checks
-    if (!user || !(await user.correctPassword(password, user.password))) {
+
+    if (
+      !user ||
+      !user.password ||
+      !(await user.correctPassword(password, user.password))
+    ) {
       return NextResponse.json(
         { status: "fail", message: "username or password are not correct!" },
         { status: 401 }
       );
     }
+
     // set cookie
     createSendToken(user._id);
 
