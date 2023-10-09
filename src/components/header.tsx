@@ -14,7 +14,7 @@ const NavigationHeader = () => {
           <Link href="/">Account</Link>
         </li>
         <li>
-          <Link href="/">Acivity</Link>
+          <Link href="/activity">Acivity</Link>
         </li>
         <li>
           <Link href="/">Cards</Link>
