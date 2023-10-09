@@ -7,7 +7,7 @@ export interface UserDocument extends Document {
   email: string;
   username: string;
   role: string;
-  password: string | undefind;
+  password: string | undefined;
   passwordConfirm: string | undefined;
   photo?: string;
   correctPassword(candidatePass: string, userPass: string): Promise<boolean>;
@@ -45,7 +45,7 @@ const userSchema = new Schema<UserDocument, UserModel>({
     type: String,
     required: [true, "Please confirm your password."],
     validate: {
-      validator: function (el: string) {
+      validator: function (this: UserDocument, el: string) {
         return el === this.password;
       },
       message: "Passwords are not the same",
@@ -57,8 +57,11 @@ const userSchema = new Schema<UserDocument, UserModel>({
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
-  this.password = await bcrypt.hash(this.password, 12);
-  this.passwordConfirm = undefined;
+  if (this.password) {
+    this.password = await bcrypt.hash(this.password, 12);
+    this.passwordConfirm = undefined;
+  }
+
   next();
 });
 
