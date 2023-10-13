@@ -1,32 +1,41 @@
-"use client";
-
+import { DBURL } from "@/utils/db";
 import formatDate from "@/utils/formatDate";
-import { useEffect, useState } from "react";
+import mongoose, { ObjectId } from "mongoose";
+import EnterUserModel from "../../../models/enterModel";
 
-interface Item {
+interface LogItem {
   enter: String;
   formatedDate: String;
   exit: String;
 }
 
-const separatedItems: { [key: string]: Item[] } = {};
+interface UserLogItem {
+  _id: ObjectId;
+  uid: String;
+  username: String;
+  userLogins: LogItem[];
+}
 
-const ActivityPage = () => {
-  const [allActivity, setAllActivity] = useState([]);
-
-  useEffect(() => {
-    fetch("/api/get-activity")
-      .then((res) => res.json())
-      .then((data) => {
-        setAllActivity(data.data);
-      });
-  }, [setAllActivity]);
-
-  console.log(allActivity);
-
+const ActivityPage = async () => {
+  let allActivity: UserLogItem[] = [];
+  let errorMessage = "";
   let elements;
 
-  if (allActivity.length) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/get-activity`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error(res.statusText + " ** " + res.status);
+
+    const result = await res.json();
+
+    allActivity = result?.data;
+  } catch (error: any) {
+    errorMessage = error.message;
+  }
+
+  if (allActivity && allActivity?.length > 0) {
     elements = allActivity.map((item: any) => (
       <div
         key={item.uid}
@@ -37,7 +46,7 @@ const ActivityPage = () => {
           <span className="font-bold">{item.username}</span>
         </h2>
         <ul className="grid grid-col-1">
-          {item.userLogins.length &&
+          {item.userLogins.length > 0 &&
             item.userLogins.map((item: any) => {
               const enterDate = new Date(item.enter);
               const exitDate = item.exit ? new Date(item.exit) : null;
@@ -57,12 +66,24 @@ const ActivityPage = () => {
                 </li>
               );
             })}
+
+          {item.userLogins.length <= 0 && (
+            <span className="block underline italic text-red-400">
+              No logs Yet
+            </span>
+          )}
         </ul>
       </div>
     ));
   }
 
-  return <div>{elements}</div>;
+  return (
+    <div>
+      <div>{new Date().toLocaleString()}</div>
+      {errorMessage === "" && elements}
+      {errorMessage !== "" && errorMessage}
+    </div>
+  );
 };
 
 export default ActivityPage;
