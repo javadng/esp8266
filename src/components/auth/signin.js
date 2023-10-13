@@ -1,5 +1,5 @@
-import Input from "./input";
-import SubmitBtn from "./submit-btn";
+import Input from "../input";
+import SubmitBtn from "../submit-btn";
 import { useState } from "react";
 
 const SignIn = (props) => {

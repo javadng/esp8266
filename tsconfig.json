@@ -39,7 +39,7 @@
     "models/enterModel.js",
     "models/userModel.js",
     "models/userModel.js",
-    "src/components/auth/input.js"
+    "src/components/input.js"
   ],
   "exclude": [
     "node_modules"

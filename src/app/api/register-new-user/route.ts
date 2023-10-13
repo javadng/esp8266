@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!user) {
       return NextResponse.json(
         { status: "fail", message: "user not found." },
-        { status: 401 }
+        { status: 404 }
       );
     }
 

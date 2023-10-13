@@ -17,7 +17,7 @@ const NavigationHeader = () => {
           <Link href="/activity">Acivity</Link>
         </li>
         <li>
-          <Link href="/">Cards</Link>
+          <Link href="/cards">Cards</Link>
         </li>
       </ul>
     </header>
