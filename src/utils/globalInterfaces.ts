@@ -5,14 +5,14 @@ export interface Http {
   result: {
     status: string;
     message: string;
-    data: { logs: [] };
+    data: { logs: []; username: string };
   } | null;
 }
 
 export interface LogItem {
   enter: Date;
   formatedDate: String;
-  exit: Date;
+  exit: Date | null;
   _id: ObjectId;
 }
 

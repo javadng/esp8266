@@ -4,15 +4,17 @@ import Input from "./input";
 import SubmitBtn from "./submit-btn";
 import SearchActivityItems from "./searchActivity";
 import useHttp from "@/hooks/useHtttp";
+import DateFilter from "./dateSearchFilter";
 
 const SearchUserForm = () => {
   const [username, setUsername] = useState("");
+  const [dateFilterOn, setDateFilterOn] = useState(false);
   const { httpResponse, sendHttpRequest } = useHttp();
   let errorMessage = "";
-  let usernameServer;
   let elements;
 
   const usernameChangeHndlr = (e: any) => setUsername(e.target.value);
+  const checkBoxHndlr = (e: any) => setDateFilterOn(e.target.checked);
 
   const submitHanler = async (e: any) => {
     e.preventDefault();
@@ -28,10 +30,13 @@ const SearchUserForm = () => {
     } catch (error: any) {
       errorMessage = error.message;
     }
+
+    setUsername("");
   };
 
   if (httpResponse?.result?.status === "success") {
     const items = httpResponse?.result?.data.logs;
+    const usernameServer = httpResponse?.result?.data?.username;
 
     elements = (
       <ul className="text-center">
@@ -47,7 +52,7 @@ const SearchUserForm = () => {
   }
 
   return (
-    <div>
+    <div className="md:w-1/2 mx-auto">
       <form
         onSubmit={submitHanler}
         className="bg-blue-300 p-6 my-6 text-center"
@@ -63,6 +68,13 @@ const SearchUserForm = () => {
           setInputChange={usernameChangeHndlr}
           value={username}
         />
+        <div className="flex items-center text-white justify-center">
+          <input type="checkbox" id="dateFilterOn" onChange={checkBoxHndlr} />
+          <label htmlFor="dateFilterOn" className="ml-3 underline italic">
+            Do you want to filtered Based on date?
+          </label>
+        </div>
+        {dateFilterOn && <DateFilter />}
         <SubmitBtn text="Search" />
       </form>
 
