@@ -7,5 +7,5 @@ export const checkAuthToken = () => {
 
   if (!jwtCookie) {
     redirect("/authpage");
-  }
+  } else return jwtCookie;
 };

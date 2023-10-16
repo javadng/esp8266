@@ -9,6 +9,7 @@ const roboto = Roboto({
   weight: ["500", "700"],
   variable: "--font-roboto",
 });
+
 const yekanFont = localFont({
   src: "./fonts/yekan-regular.ttf",
   variable: "--font-yekan",

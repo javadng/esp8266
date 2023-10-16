@@ -1,9 +1,16 @@
-"use client";
-
 import AddNewCard from "@/components/addNewCard";
+import verifyToken from "@/utils/verify-token";
 
-const CardPage = () => {
-  
+const CardPage = async () => {
+  const errorMessage = await verifyToken();
+
+  if (errorMessage)
+    return (
+      <div className="text-center mx-auto mt-24 text-2xl text-red-500 font-bold">
+        <h2>{errorMessage}</h2>
+      </div>
+    );
+
   return (
     <div className="text-center mx-auto">
       <AddNewCard />

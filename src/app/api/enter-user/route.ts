@@ -2,12 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import EnterUserModel from "../../../../models/enterModel";
 import { DBURL } from "@/utils/db";
 import mongoose from "mongoose";
-
-interface UserLogs {
-  enter: Date;
-  exit: Date;
-  formatedDate: String;
-}
+import { UserLogs } from "@/utils/globalInterfaces";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   let client;

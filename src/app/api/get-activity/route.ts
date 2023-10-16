@@ -2,19 +2,7 @@ import DBConnectHandler from "@/utils/dbConnectFn";
 import { NextRequest, NextResponse } from "next/server";
 import EnterUserModel from "../../../../models/enterModel";
 import { ObjectId } from "mongoose";
-
-interface LogItem {
-  enter: String;
-  formatedDate: String;
-  exit: String;
-}
-
-interface UserLogItem {
-  _id: ObjectId;
-  uid: String;
-  username: String;
-  userLogins: LogItem[];
-}
+import { UserLogItem } from "@/utils/globalInterfaces";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   await DBConnectHandler(NextResponse);

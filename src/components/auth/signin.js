@@ -1,10 +1,13 @@
+import { redirect } from "next/navigation";
 import Input from "../input";
 import SubmitBtn from "../submit-btn";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SignIn = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const usernameChangeHander = (e) => setUsername(e.target.value);
   const passwordChangeHander = (e) => setPassword(e.target.value);
@@ -20,7 +23,7 @@ const SignIn = (props) => {
 
     const data = await res.json();
 
-    console.log(data);
+    if (data.status === "success") router.replace("/");
   };
 
   return (

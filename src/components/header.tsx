@@ -11,7 +11,7 @@ const NavigationHeader = () => {
           <Link href="/">Home</Link>
         </li>
         <li>
-          <Link href="/">Account</Link>
+          <Link href="/search-activity">Search</Link>
         </li>
         <li>
           <Link href="/activity">Acivity</Link>
