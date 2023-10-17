@@ -7,7 +7,6 @@ import User, { UserDocument } from "@/../../models/userModel";
 const jwtSecret = process.env.JWT_SECRET || "esp8266-secret-javad";
 
 export default async function verifyToken() {
-  console.log(process.env.JWT_SECRET);
   const jwtToken = checkAuthToken();
 
   if (jwtToken) {

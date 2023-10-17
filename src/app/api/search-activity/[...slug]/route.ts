@@ -39,5 +39,9 @@ export async function POST(
       : enterDate >= startFilterDate;
   });
 
-  return NextResponse.json({ logs: filterd });
+  return NextResponse.json({
+    status: "success",
+    message: "",
+    data: { logs: filterd },
+  });
 }

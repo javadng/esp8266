@@ -9,6 +9,8 @@ import DateFilter from "./dateSearchFilter";
 const SearchUserForm = () => {
   const [username, setUsername] = useState("");
   const [dateFilterOn, setDateFilterOn] = useState(false);
+  const [filterDate, setFilterDate] = useState({ start: "", end: "" });
+
   const { httpResponse, sendHttpRequest } = useHttp();
   let errorMessage = "";
   let elements;
@@ -19,20 +21,40 @@ const SearchUserForm = () => {
   const submitHanler = async (e: any) => {
     e.preventDefault();
 
+    const data = {
+      username,
+      filter: { start: "", end: "" },
+    };
+
+    if (filterDate.start) data.filter.start = filterDate.start;
+    if (filterDate.end) data.filter.end = filterDate.end;
+
+    console.log(data);
+
     try {
       const option: RequestInit = {
         cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify(data),
       };
-      sendHttpRequest(`/api/search-activity`, option);
+
+      if (filterDate.start || filterDate.end) {
+        sendHttpRequest(
+          `/api/search-activity/${filterDate.start}/${filterDate.end}`,
+          option
+        );
+      } else {
+        sendHttpRequest(`/api/search-activity`, option);
+      }
     } catch (error: any) {
       errorMessage = error.message;
     }
 
     setUsername("");
   };
+
+  console.log(httpResponse);
 
   if (httpResponse?.result?.status === "success") {
     const items = httpResponse?.result?.data.logs;
@@ -55,7 +77,7 @@ const SearchUserForm = () => {
     <div className="md:w-1/2 mx-auto">
       <form
         onSubmit={submitHanler}
-        className="bg-blue-300 p-6 my-6 text-center"
+        className="bg-blue-300 p-6 my-6 text-center rounded-2xl"
       >
         <h2 className="text-white text-2xl my-3">Search username:</h2>
         <span className="text-red-500 text-sm md:text-xl underline font-bold italic">
@@ -70,11 +92,13 @@ const SearchUserForm = () => {
         />
         <div className="flex items-center text-white justify-center">
           <input type="checkbox" id="dateFilterOn" onChange={checkBoxHndlr} />
-          <label htmlFor="dateFilterOn" className="ml-3 underline italic">
+          <label htmlFor="dateFilterOn" className="ml-3 italic">
             Do you want to filtered Based on date?
           </label>
         </div>
-        {dateFilterOn && <DateFilter />}
+        {dateFilterOn && (
+          <DateFilter setFilterDate={setFilterDate} filterDate={filterDate} />
+        )}
         <SubmitBtn text="Search" />
       </form>
 
