@@ -2,12 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import EnterUserModel from "../../../../../models/enterModel";
 import DBConnectHandler from "@/utils/dbConnectFn";
 import { LogItem } from "@/utils/globalInterfaces";
+import guardJustAdmin from "@/utils/guard-admin";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   await DBConnectHandler(NextResponse);
+
+  try {
+    await guardJustAdmin();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        status: "fail",
+        message: error.message || "You'r not authorized to do such things!",
+      },
+      { status: 401 }
+    );
+  }
 
   const data = await req.json();
   const username = data?.username;

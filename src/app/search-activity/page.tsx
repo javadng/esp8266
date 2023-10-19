@@ -1,16 +1,8 @@
-import SearchActivityItems from "@/components/searchActivity";
 import SearchUserForm from "@/components/searchUserForm";
-import verifyToken from "@/utils/verify-token";
+import { checkAuthToken } from "@/utils/check-auth";
 
 const SearchActivityPage = async () => {
-  // const errorMessage = await verifyToken();
-
-  // if (errorMessage)
-  //   return (
-  //     <div className="text-center mx-auto mt-24 text-2xl text-red-500 font-bold">
-  //       <h2>{errorMessage}</h2>
-  //     </div>
-  //   );
+  checkAuthToken();
 
   return (
     <div className="container mx-auto">

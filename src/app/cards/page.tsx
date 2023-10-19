@@ -2,7 +2,8 @@ import AddNewCard from "@/components/addNewCard";
 import verifyToken from "@/utils/verify-token";
 
 const CardPage = async () => {
-  const errorMessage = await verifyToken();
+  const tokenVerify = await verifyToken();
+  const errorMessage = tokenVerify?.error;
 
   if (errorMessage)
     return (
