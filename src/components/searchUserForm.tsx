@@ -6,6 +6,12 @@ import SearchActivityItems from "./searchActivity";
 import useHttp from "@/hooks/useHtttp";
 import DateFilter from "./dateSearchFilter";
 
+const focusClass =
+  "focus:-translate-y-1 focus:shadow-lg focus-within:bg-gray-light focus-within:placeholder:text-dark-c";
+const normalClass =
+  "bg-gray-transparent border-blue-400 transition placeholder:text-white rounded-xl block w-full text-dark-c";
+const errorClass = "invalid:border-red-500 invalid:shadow-custom-red";
+
 const SearchUserForm = () => {
   const [username, setUsername] = useState("");
   const [dateFilterOn, setDateFilterOn] = useState(false);
@@ -29,7 +35,7 @@ const SearchUserForm = () => {
     if (filterDate.start) data.filter.start = filterDate.start;
     if (filterDate.end) data.filter.end = filterDate.end;
 
-    console.log(data);
+    setUsername("");
 
     try {
       const option: RequestInit = {
@@ -50,11 +56,7 @@ const SearchUserForm = () => {
     } catch (error: any) {
       errorMessage = error.message;
     }
-
-    setUsername("");
   };
-
-  console.log(httpResponse);
 
   if (httpResponse?.result?.status === "success") {
     const items = httpResponse?.result?.data.logs;
@@ -83,13 +85,29 @@ const SearchUserForm = () => {
         <span className="text-red-500 text-sm md:text-xl underline font-bold italic">
           NOTE: only admin can search for all users!
         </span>
-        <Input
+        {/* <Input
           id="username"
           placeholder="Username"
           type="text"
           setInputChange={usernameChangeHndlr}
           value={username}
-        />
+        /> */}
+        <div className="my-8 mx-auto w-4/5 relative">
+          <input
+            id="username"
+            placeholder=" "
+            type="text"
+            onChange={usernameChangeHndlr}
+            value={username}
+            className={`${normalClass} ${focusClass} ${errorClass} input-form`}
+          />
+          <label
+            htmlFor="username"
+            className="label-form transition duration-300 absolute left-4 top-2 text-white"
+          >
+            username
+          </label>
+        </div>
         <div className="flex items-center text-white justify-center">
           <input type="checkbox" id="dateFilterOn" onChange={checkBoxHndlr} />
           <label htmlFor="dateFilterOn" className="ml-3 italic">
