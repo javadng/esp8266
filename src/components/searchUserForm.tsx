@@ -85,13 +85,6 @@ const SearchUserForm = () => {
         <span className="text-red-500 text-sm md:text-xl underline font-bold italic">
           NOTE: only admin can search for all users!
         </span>
-        {/* <Input
-          id="username"
-          placeholder="Username"
-          type="text"
-          setInputChange={usernameChangeHndlr}
-          value={username}
-        /> */}
         <div className="my-8 mx-auto w-4/5 relative">
           <input
             id="username"
