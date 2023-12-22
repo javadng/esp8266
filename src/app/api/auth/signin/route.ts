@@ -30,9 +30,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         { status: 404 }
       );
     }
-
     // password checks
-
     if (
       !user ||
       !user.password ||

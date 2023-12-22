@@ -1,7 +1,8 @@
 import { ObjectId } from "mongoose";
 
 export interface Http {
-  error: Object | null;
+  error: string;
+  loading: boolean;
   result: {
     status: string;
     message: string;

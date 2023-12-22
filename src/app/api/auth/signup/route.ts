@@ -34,9 +34,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
   } catch (error: any) {
     mongoose.connection.close();
-    return NextResponse.json({
-      status: "fail. create-enter",
-      message: error.message,
-    });
+    return NextResponse.json(
+      {
+        status: "fail. create-enter",
+        message: error.message,
+      },
+      { status: 401 }
+    );
   }
 }

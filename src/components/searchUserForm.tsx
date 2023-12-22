@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import Input from "./input";
 import SubmitBtn from "./submit-btn";
 import SearchActivityItems from "./searchActivity";
 import useHttp from "@/hooks/useHtttp";
 import DateFilter from "./dateSearchFilter";
+import Loading from "./loading";
 
 const focusClass =
   "focus:-translate-y-1 focus:shadow-lg focus-within:bg-gray-light focus-within:placeholder:text-dark-c";
@@ -18,7 +18,6 @@ const SearchUserForm = () => {
   const [filterDate, setFilterDate] = useState({ start: "", end: "" });
 
   const { httpResponse, sendHttpRequest } = useHttp();
-  let errorMessage = "";
   let elements;
 
   const usernameChangeHndlr = (e: any) => setUsername(e.target.value);
@@ -26,6 +25,10 @@ const SearchUserForm = () => {
 
   const submitHanler = async (e: any) => {
     e.preventDefault();
+
+    if (!username && !username.trim()) {
+      return;
+    }
 
     const data = {
       username,
@@ -37,26 +40,30 @@ const SearchUserForm = () => {
 
     setUsername("");
 
-    try {
-      const option: RequestInit = {
-        cache: "no-store",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      };
+    const option: RequestInit = {
+      cache: "no-store",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
 
-      if (filterDate.start || filterDate.end) {
-        sendHttpRequest(
-          `/api/search-activity/${filterDate.start}/${filterDate.end}`,
-          option
-        );
-      } else {
-        sendHttpRequest(`/api/search-activity`, option);
-      }
-    } catch (error: any) {
-      errorMessage = error.message;
+    if (filterDate.start || filterDate.end) {
+      sendHttpRequest(
+        `/api/search-activity/${filterDate.start}/${filterDate.end}`,
+        option
+      );
+    } else {
+      sendHttpRequest(`/api/search-activity`, option);
     }
   };
+
+  if (httpResponse.error) {
+    elements = (
+      <h2 className="text-center font-bold text-red-500">
+        {httpResponse.error}
+      </h2>
+    );
+  }
 
   if (httpResponse?.result?.status === "success") {
     const items = httpResponse?.result?.data.logs;
@@ -71,12 +78,10 @@ const SearchUserForm = () => {
       </ul>
     );
   }
-  if (httpResponse.error) {
-    // elements = <h2>{httpResponse.error}</h2>;
-  }
 
   return (
     <div className="md:w-1/2 mx-auto">
+      {httpResponse.loading && <Loading />}
       <form
         onSubmit={submitHanler}
         className="bg-blue-300 p-6 my-6 text-center rounded-2xl"
@@ -112,12 +117,10 @@ const SearchUserForm = () => {
         )}
         <SubmitBtn text="Search" />
       </form>
-
-      {elements && (
+      {!httpResponse.error && (
         <h3 className="text-center my-6 text-2xl">Search result for user: </h3>
       )}
-      {errorMessage === "" && elements}
-      {errorMessage !== "" && errorMessage}
+      {elements}
     </div>
   );
 };

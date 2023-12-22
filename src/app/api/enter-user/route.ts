@@ -82,8 +82,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
 
-    // EnterUserModel.updateOne({ uid }, { $push: { userLogins: formatedDate } });
-
     return NextResponse.json(
       { status: "success", message: "welcome" },
       { status: 201 }
@@ -96,12 +94,4 @@ export async function POST(req: NextRequest, res: NextResponse) {
       message: error.message,
     });
   }
-
-  // return client.connection.close();
 }
-
-// export async function POST(request: Request) {
-//   const response = await request.json();
-//   const { id } = response;
-//   return NextResponse.json({ id });
-// }
